@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Zana\Translation;
+
+use Zana\Configuration\ConfigurationInterface;
+use Zana\Container\Contracts\ContainerInterface;
+use Zana\Container\Contracts\ServiceCollectionInterface;
+use Zana\Container\Contracts\ServiceResolverInterface;
+use Zana\Core\ApplicationInterface;
+use Zana\Core\ServiceProvider;
+use Zana\Validation\MessageTranslatorInterface;
+
+/**
+ * Registers the locales (translation.locales; the first is the fallback),
+ * the current locale, the catalogs, the translator and LocaleMiddleware.
+ *
+ * At boot, each module's Resources/translations folder is added in module
+ * order, then the application's catalogs (translation.path, default
+ * <base>/translations), which therefore win. With mj-zana/validation
+ * installed, validation messages are translated too.
+ */
+final class TranslationServiceProvider extends ServiceProvider
+{
+    public function register(ServiceCollectionInterface $services): void
+    {
+        $services
+            ->singleton(Locales::class, static function (ServiceResolverInterface $r): Locales {
+                /** @var list<string> $locales */
+                $locales = $r->get(ConfigurationInterface::class)->array('translation.locales', ['en']);
+
+                return new Locales($locales);
+            })
+            ->singleton(LocaleContext::class)
+            ->singleton(Catalogs::class)
+            ->singleton(Translator::class)
+            ->alias(TranslatorInterface::class, Translator::class)
+            ->singleton(LocaleMiddleware::class);
+
+        if (interface_exists(MessageTranslatorInterface::class) && !$services->has(MessageTranslatorInterface::class)) {
+            $services->singleton(MessageTranslatorInterface::class, ValidationMessageTranslator::class);
+        }
+    }
+
+    public function boot(ContainerInterface $container): void
+    {
+        $application = $container->get(ApplicationInterface::class);
+        $catalogs = $container->get(Catalogs::class);
+        assert($application instanceof ApplicationInterface && $catalogs instanceof Catalogs);
+
+        foreach ($application->modules() as $module) {
+            $catalogs->addDirectory($module->path('Resources', 'translations'));
+        }
+        $catalogs->addDirectory($application->config()->string('translation.path', $application->path('translations')));
+    }
+
+    public function origin(): string
+    {
+        return 'package:mj-zana/translation';
+    }
+}

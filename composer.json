@@ -1,0 +1,49 @@
+{
+    "name": "mj-zana/translation",
+    "description": "Translation catalogs, locale negotiation and the request locale for Zana applications",
+    "type": "library",
+    "keywords": ["zana", "translation", "i18n", "locale", "accept-language"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.5",
+        "mj-zana/core": "^2.1",
+        "psr/http-message": "^2.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "require-dev": {
+        "mj-zana/validation": "^2.1",
+        "nyholm/psr7": "^1.8",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5"
+    },
+    "suggest": {
+        "ext-intl": "To format ICU messages: plurals, numbers, select",
+        "mj-zana/validation": "To translate validation messages"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zana\\Translation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Zana\\Translation\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        { "type": "path", "url": "../zana-container", "options": { "symlink": true, "versions": { "mj-zana/container": "2.1.0" } } },
+        { "type": "path", "url": "../zana-configuration", "options": { "symlink": true, "versions": { "mj-zana/configuration": "2.1.0" } } },
+        { "type": "path", "url": "../zana-core", "options": { "symlink": true, "versions": { "mj-zana/core": "2.1.0" } } },
+        { "type": "path", "url": "../zana-validation", "options": { "symlink": true, "versions": { "mj-zana/validation": "2.1.0" } } }
+    ],
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --memory-limit=1G"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
