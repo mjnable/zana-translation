@@ -26,10 +26,7 @@ final readonly class LocaleMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $segment = explode('/', ltrim($request->getUri()->getPath(), '/'))[0];
-        $locale = $this->locales->find($segment);
-        $negotiated = $locale === null;
-        $locale ??= $this->locales->negotiate($request->getHeaderLine('Accept-Language'));
+        [$locale, $negotiated] = $this->detect($request);
 
         $response = $this->context->run($locale, static fn (): ResponseInterface => $handler->handle($request->withAttribute('_locale', $locale)));
 
@@ -41,5 +38,21 @@ final readonly class LocaleMiddleware implements MiddlewareInterface
         }
 
         return $response;
+    }
+
+    /**
+     * The locale of a request, and whether Accept-Language decided it (rather
+     * than the path). Error pages use it, as they render outside this middleware.
+     *
+     * @return array{string, bool}
+     */
+    public function detect(ServerRequestInterface $request): array
+    {
+        $segment = explode('/', ltrim($request->getUri()->getPath(), '/'))[0];
+        $locale = $this->locales->find($segment);
+
+        return $locale === null
+            ? [$this->locales->negotiate($request->getHeaderLine('Accept-Language')), true]
+            : [$locale, false];
     }
 }
