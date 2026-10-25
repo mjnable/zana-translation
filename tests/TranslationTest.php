@@ -163,14 +163,17 @@ final class TranslationTest extends TestCase
     public function testHandlerLanguageHeadersAreKept(): void
     {
         $locales = new Locales(['en', 'fr']);
-        $response = (new LocaleMiddleware($locales, new LocaleContext($locales)))->process(new ServerRequest('GET', '/fr'), new class () implements RequestHandlerInterface {
+        $handler = new class () implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
-                return new Response(200, ['Content-Language' => 'fr-CA']);
+                return new Response(200, ['Content-Language' => 'fr-CA', 'Vary' => 'Cookie, accept-language']);
             }
-        });
+        };
+
+        $response = (new LocaleMiddleware($locales, new LocaleContext($locales)))->process(new ServerRequest('GET', '/'), $handler);
 
         $this->assertSame('fr-CA', $response->getHeaderLine('Content-Language'));
+        $this->assertSame('Cookie, accept-language', $response->getHeaderLine('Vary'), 'not added twice');
     }
 
     /**

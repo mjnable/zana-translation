@@ -33,7 +33,8 @@ final readonly class LocaleMiddleware implements MiddlewareInterface
         if (!$response->hasHeader('Content-Language')) {
             $response = $response->withHeader('Content-Language', $locale);
         }
-        if ($negotiated) {
+        $vary = array_map('trim', explode(',', strtolower($response->getHeaderLine('Vary'))));
+        if ($negotiated && !in_array('accept-language', $vary, true) && !in_array('*', $vary, true)) {
             $response = $response->withAddedHeader('Vary', 'Accept-Language');
         }
 
