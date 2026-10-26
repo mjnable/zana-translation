@@ -34,7 +34,7 @@ final class TranslationServiceProvider extends ServiceProvider
                 $locales = $r->get(ConfigurationInterface::class)->array('translation.locales', ['en']);
 
                 return new Locales($locales);
-            })
+            })->uses(ConfigurationInterface::class)
             ->singleton(LocaleContext::class)
             ->singleton(Catalogs::class)
             ->singleton(Translator::class)
@@ -53,14 +53,14 @@ final class TranslationServiceProvider extends ServiceProvider
                     $config->bool('translation.redirect_root', false),
                     $responses instanceof ResponseFactoryInterface ? $responses : null,
                 );
-            })
+            })->uses(ConfigurationInterface::class, Locales::class, LocaleContext::class, ResponseFactoryInterface::class)
             ->transient(LocaleSwitchAction::class, static function (ServiceResolverInterface $r): LocaleSwitchAction {
                 $locales = $r->get(Locales::class);
                 $responses = $r->get(ResponseFactoryInterface::class);
                 assert($locales instanceof Locales && $responses instanceof ResponseFactoryInterface);
 
                 return new LocaleSwitchAction($locales, $responses, $r->get(ConfigurationInterface::class)->string('translation.cookie', 'locale'));
-            });
+            })->uses(Locales::class, ResponseFactoryInterface::class, ConfigurationInterface::class);
 
         if (interface_exists(MessageTranslatorInterface::class) && !$services->has(MessageTranslatorInterface::class)) {
             $services->singleton(MessageTranslatorInterface::class, ValidationMessageTranslator::class);
