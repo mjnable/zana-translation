@@ -2,7 +2,13 @@
     "name": "mj-zana/translation",
     "description": "Translation catalogs, locale negotiation and the request locale for Zana applications",
     "type": "library",
-    "keywords": ["zana", "translation", "i18n", "locale", "accept-language"],
+    "keywords": [
+        "zana",
+        "translation",
+        "i18n",
+        "locale",
+        "accept-language"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.5",
@@ -13,6 +19,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
+        "mj-zana/routing": "^2.21",
         "mj-zana/validation": "^2.1",
         "nyholm/psr7": "^1.8",
         "phpstan/phpstan": "^2.1",
@@ -33,10 +40,66 @@
         }
     },
     "repositories": [
-        { "type": "path", "url": "../zana-container", "options": { "symlink": true, "versions": { "mj-zana/container": "2.4.0" } } },
-        { "type": "path", "url": "../zana-configuration", "options": { "symlink": true, "versions": { "mj-zana/configuration": "2.4.0" } } },
-        { "type": "path", "url": "../zana-core", "options": { "symlink": true, "versions": { "mj-zana/core": "2.4.0" } } },
-        { "type": "path", "url": "../zana-validation", "options": { "symlink": true, "versions": { "mj-zana/validation": "2.4.0" } } }
+        {
+            "type": "path",
+            "url": "../zana-container",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mj-zana/container": "2.21.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../zana-configuration",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mj-zana/configuration": "2.21.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../zana-core",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mj-zana/core": "2.21.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../zana-validation",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mj-zana/validation": "2.21.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../zana-http",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mj-zana/http": "2.21.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../zana-routing",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mj-zana/routing": "2.21.0"
+                }
+            }
+        }
     ],
     "scripts": {
         "test": "phpunit",

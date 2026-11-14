@@ -16,7 +16,11 @@ use Psr\Http\Message\ServerRequestInterface;
  *     // <a href="/locale/fr?to=/fr/a-propos">Français</a>
  *
  * "to" must be a path on this site; anything else redirects to "/<locale>".
+ *
+ * Public (2.21, FE-68): every visitor may choose a language. The attribute
+ * is read by mj-zana/routing 2.21; without it, PHP never loads the class.
  */
+#[\Zana\Routing\Attribute\PublicRoute(reason: 'The language switcher: every visitor may choose a language')]
 final readonly class LocaleSwitchAction
 {
     public function __construct(

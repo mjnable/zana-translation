@@ -3,6 +3,13 @@
 All Zana packages share one version number and are released together. A release that did
 not change this package is not listed.
 
+## 2.21.0 — Unreleased
+
+### Changed
+
+- `LocaleSwitchAction` carries `#[PublicRoute]` (mj-zana/routing 2.21, FE-68): every visitor may choose a language, so
+  the security rules of `check` accept its route as it is. Without mj-zana/routing, nothing reads the attribute.
+
 ## 2.4.0 — 2026-10-26
 
 ### Changed

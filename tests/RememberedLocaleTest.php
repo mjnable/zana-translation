@@ -58,6 +58,14 @@ final class RememberedLocaleTest extends TestCase
         $this->assertSame('/en', $switch(new ServerRequest('GET', '/locale/xx'), 'xx')->getHeaderLine('Location'), 'unknown locales fall back');
     }
 
+    public function testTheSwitcherSaysEveryVisitorMayReachIt(): void
+    {
+        // 2.21, FE-68: a strict application's check accepts the route as it is.
+        $route = (new \Zana\Routing\Router())->get('/locale/{locale}', LocaleSwitchAction::class);
+
+        $this->assertStringContainsString('every visitor may choose a language', (string) \Zana\Routing\Attribute\PublicRoute::reasonFor($route));
+    }
+
     public function testLocalizedValues(): void
     {
         $title = new LocalizedValue(['en' => 'Launch', 'fr' => 'Lancement', 'sw' => '  ']);
